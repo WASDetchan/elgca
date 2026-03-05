@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"fmt"
-
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 )
@@ -18,11 +16,10 @@ var (
 )
 
 type Home struct {
-	cnt int
 }
 
 func NewHome() Home {
-	return Home{0}
+	return Home{}
 }
 
 func (m Home) Init() tea.Cmd {
@@ -30,15 +27,6 @@ func (m Home) Init() tea.Cmd {
 }
 
 func (m Home) Update(msg tea.Msg) (Component, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyPressMsg:
-		switch msg.String() {
-		case "up":
-			m.cnt++
-		case "down":
-			m.cnt--
-		}
-	}
 	return m, nil
 }
 
@@ -47,5 +35,5 @@ func (m Home) View() tea.View {
 }
 
 func (m Home) Render() string {
-	return HomeStyle.Render(fmt.Sprint(m.cnt))
+	return HomeStyle.Render("hi!")
 }

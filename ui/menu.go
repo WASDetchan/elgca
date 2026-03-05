@@ -33,6 +33,19 @@ func updateStyles(msg tea.Msg) {
 	case tea.WindowSizeMsg:
 		SidebarStyle = SidebarStyle.Height(msg.Height)
 		HomeStyle = HomeStyle.Height(msg.Height).Width(msg.Width - SidebarStyle.GetWidth())
+		SourcesStyle = SourcesStyle.Height(msg.Height)
+		EmptySourceStyle = EmptySourceStyle.
+			Height(msg.Height).
+			Width(msg.Width -
+				SidebarStyle.GetWidth() -
+				SourcesStyle.GetWidth(),
+			)
+		SourceCreationStyle = SourceCreationStyle.
+			Height(msg.Height).
+			Width(msg.Width -
+				SidebarStyle.GetWidth() -
+				SourcesStyle.GetWidth(),
+			)
 	}
 }
 
@@ -40,10 +53,13 @@ func NewMainMenu() MainMenu {
 	return MainMenu{0, []section{
 		{"home", NewHome()},
 		{"playlists", NewHome()},
-		{"sources", NewHome()},
-		{"providers", NewHome()},
+		{"sources", NewSources()},
 		{"settings", NewHome()},
 	}}
+}
+
+func startLog() tea.Msg {
+	return nil
 }
 
 func (m MainMenu) Init() tea.Cmd {
@@ -74,7 +90,8 @@ func (m MainMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	innerCmd := tea.Cmd(nil)
 
 	if propagate {
-		m.sections[m.selectedSection].component, innerCmd = m.sections[m.selectedSection].component.Update(msg)
+		m.sections[m.selectedSection].component, innerCmd =
+			m.sections[m.selectedSection].component.Update(msg)
 	}
 
 	return m, innerCmd
@@ -93,12 +110,13 @@ func (m MainMenu) View() tea.View {
 
 	selfContent := SidebarStyle.Render(cont.String())
 
-	view := tea.NewView(
-		lipgloss.JoinHorizontal(lipgloss.Top,
-			selfContent,
-			m.sections[m.selectedSection].component.Render(),
-		),
+	content := lipgloss.JoinHorizontal(lipgloss.Top,
+		selfContent,
+		m.sections[m.selectedSection].component.Render(),
 	)
+
+	view := tea.NewView(content)
+
 	view.AltScreen = true
 	return view
 }
